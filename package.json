@@ -49,6 +49,7 @@
     "url": "https://github.com/sponsors/zcag"
   },
   "dependencies": {
+    "cmd-ts": "^0.15.0",
     "linkedom": "^0.18.12"
   },
   "devDependencies": {
