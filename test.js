@@ -191,6 +191,9 @@ test('heading class not skipped', () => assert(r18.markdown.includes('## Section
 const r18b = readdown('<html><head><title>Test</title></head><body><main><div class="loading-state"><p>Still loading data.</p></div></main></body></html>', { includeHeader: false });
 test('loading class not skipped', () => assert(r18b.markdown.includes('Still loading'), 'div with class="loading-state" was incorrectly skipped'));
 
+const r18c = readdown('<html><head><title>Test</title></head><body><main class="min-h-[calc(100vh-var(--ui-header-height))]"><h1>Introduction</h1><p>Nitro is a full-stack server framework, compatible with any runtime and any deployment target.</p></main></body></html>', { includeHeader: false });
+test('utility class containing header not skipped', () => assert(r18c.markdown.includes('Nitro is a full-stack'), 'main with ui-header-height class was incorrectly skipped'));
+
 // Test 19: Layout tables should be unwrapped, not rendered as markdown tables
 console.log('\n--- Layout tables ---');
 const r19 = readdown('<html><head><title>Test</title></head><body><table><tr><td><h1>Title</h1><p>Content paragraph.</p></td></tr></table></body></html>', { includeHeader: false });

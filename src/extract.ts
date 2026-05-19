@@ -9,7 +9,12 @@ const REMOVE_TAGS = new Set([
   'input', 'select', 'textarea', 'label', 'dialog',
 ]);
 
-const SKIP_CLASSES = /\bnav\b|menu|sidebar|\bfooter\b|\bheader\b|breadcrumb|pagination|\bads?\b[-_]?|banner|cookie|popup|modal|overlay|\bsocial\b|share|comment-form|search-form|toc[-_]|table-of-contents/i;
+const SKIP_CLASS_PATTERNS = [
+  /^(?:nav|menu|sidebar|footer|header|breadcrumb|pagination|ad|ads|banner|cookie|popup|modal|overlay|social|share)$/i,
+  /^(?:comment-form|search-form|table-of-contents)$/i,
+  /^(?:toc)[-_]/i,
+  /[-_](?:nav|menu|sidebar|footer|header|breadcrumb|pagination|ad|ads|banner|cookie|popup|modal|overlay|social|share)$/i,
+];
 
 interface ScoredElement {
   element: Element;
@@ -75,8 +80,18 @@ export function shouldSkipElement(el: Element): boolean {
   if (REMOVE_TAGS.has(tag)) return true;
   if (el.getAttribute('hidden') !== null) return true;
   if (el.getAttribute('aria-hidden') === 'true') return true;
-  if (SKIP_CLASSES.test(el.className || '')) return true;
+  if (hasSkippableClass(el)) return true;
   return false;
+}
+
+function hasSkippableClass(el: Element): boolean {
+  const className = el.getAttribute('class') || '';
+  if (!className) return false;
+
+  return className
+    .split(/\s+/)
+    .filter(Boolean)
+    .some(cls => SKIP_CLASS_PATTERNS.some(pattern => pattern.test(cls)));
 }
 
 function textLength(el: Element): number {
